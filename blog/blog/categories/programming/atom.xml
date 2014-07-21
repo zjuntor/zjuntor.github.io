@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Programming | Life Stream]]></title>
+  <link href="http://zjuntor.info/blog/categories/programming/atom.xml" rel="self"/>
+  <link href="http://zjuntor.info/"/>
+  <updated>2014-07-22T02:41:33+08:00</updated>
+  <id>http://zjuntor.info/</id>
+  <author>
+    <name><![CDATA[zjuntor]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Something About Learning JavaScript]]></title>
+    <link href="http://zjuntor.info/2012/08/something-about-learning-javascript/"/>
+    <updated>2012-08-11T00:00:00+08:00</updated>
+    <id>http://zjuntor.info/2012/08/something-about-learning-javascript</id>
+    <content type="html"><![CDATA[<p>Recently, I learned JavaScript forward, using this <a href="http://book.douban.com/subject/3182419/" target="_blank">book</a>, along with the <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Guide" target="_blank">JavaScript Guide</a> from Mozilla Developer Network. Here are some note about the key point to me.</p>
+
+<p><code>this</code> keyword</p>
+
+<p>There is a statement in the <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Expressions_and_Operators#this" target="_blank">Guide</a>:</p>
+
+<blockquote>
+  <p>Use the <code>this</code> keyword to refer to the current object. In general, <code>this</code> refers to the calling object in a method.</p>
+</blockquote>
+
+<p>The key point is the second sentence, which clearly and exactly explains that <code>this</code> keyword refers the calling object. This is enough, and the first sentence, let it go the hell.</p>
+
+<p>Closure</p>
+
+<p>After a function has returned, the local environment (local variables etc.) can not be collected immediately by GC, when there are some external reference to the local environment. This can be made by assigning a nested function which uses the local variables to an external variable in the function, or returning the nested function and assigning it to external variables. for example:</p>
+
+<pre class="brush:js">//closure#1
+var getter,setter;
+(function(){
+    var value=0;
+    getter = function(){return value;};
+    setter = function(v){value = v;};
+})();
+//closure#2
+function iterator(x){
+    var i = 0;
+    return function(){return x[i++];};
+}</pre>
+
+<p>Constructor</p>
+
+<p>A constructor is an function object just looks like normal function objects which is use to create new objects. The constructor property of an object is the constructor using which the object made(it’s a convenience and by default). When a constructor is called using <code>new</code> operator, there something happened behind the scene:</p>
+
+<ul>
+  <li>JavaScript engine creates a generic object and assignes it to <code>this</code> , and then passes it to the constructor.</li>
+  <li>assigning contructor.prototype to the internal property of object <code>this</code> refers, in Firefox the property is ‘__proto__’, which is used for making up the prototype chain. Then assign the constructor.prototype.constructor object to constructor property of object <code>this</code> refers.</li>
+  <li>finally, make up the rest of the object with the code in the constructor and then return the object <code>this</code> refers to implicitly.</li>
+</ul>
+
+<p>Prototype</p>
+
+<p>JavaScript is object-based, object-oriented language. it use prototype to implement the inheritance. For example:</p>
+
+<pre class="brush:applescript">var Shape = function(){ this.info = 'Shape'; }
+var Circle = function(diameter){ this.diameter = diameter; }
+Circle.prototype = new Shape();
+Circle.prototype.constructor = Circle;</pre>
+
+<p>When try to access a property of an object, the JavaScript engine searches the object first, if not found, then up along the prototype chain to the end until the property has been found, if still not found, return undefined.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Setup Python Web]]></title>
+    <link href="http://zjuntor.info/2012/07/setup-python-web/"/>
+    <updated>2012-07-13T00:00:00+08:00</updated>
+    <id>http://zjuntor.info/2012/07/setup-python-web</id>
+    <content type="html"><![CDATA[<p>This weekend, I tried to setup Python Web environment. At beginning, I tried Apache http server &amp; mod_python, but shamefully failed.  Then, I turned to Nginx &amp; uwsgi.</p>
+
+<p>Nginx, as its official claimed, is a high performance http server &amp; reverse proxy. As a reverse proxy, in my perception, it just responses the request and then distributes it to the according server which is the one really processing the request.  In the Nginx &amp; uwsgi couple, the real server to process request is uwsgi, which implements its own uwsgi protocol &amp; wsgi protocal.</p>
+
+<p>Using this architecture, there several advantages, for example, we can use Nginx as a load balancer, in spite of that I don’t really understand this detailly.</p>
+
+<p>install nginx:</p>
+
+<pre class="brush:shell">#in extracted folder, may need su privilege
+./configure --prefix=where/to/install/ngnix
+make &amp; make install</pre>
+
+<p>install uwsgi:</p>
+
+<pre class="brush:shell">#using virtualenv
+source path/to/yourvirtualenv/bin/activate
+easy_install uwsgi</pre>
+
+<p>configure nginx:</p>
+
+<pre class="brush:plain">#in nginxhome/conf/nginx.conf
+server{
+		listen 8081;
+		server_name localhost;
+		location /{
+			include uwsgi_params;
+			uwsgi_pass localhost:3031;
+			root  path/to/demo/;		
+		}	
+	}</pre>
+
+<p>write wsgi script(in folder path/to/demo/):</p>
+
+<pre class="brush:applescript">from bottle import route, run, default_app  
+@route('/demo')  
+def index():  
+	return "it works."
+if __name__ == '__main__':
+	run(host='localhost', port=3032)
+else:
+	application = default_app()</pre>
+
+<p>now, start nginx &amp; uwsgi:</p>
+
+<pre class="brush:shell">nginxhome/sbin/nginx
+#in virtualenv
+uwsgi --socket localhost:3031 -H virtualenvname --wsgi-file path/to/demo.py</pre>
+
+<p>something to be marked:</p>
+
+<p>1, during install, using ldd to make out the dependencies;</p>
+
+<p>2, there more details to configure of nginx &amp; uwsgi if needed.</p>
+
+<p>3, in many examples, to start uwsgi, ‘–http’ option is used, but that may failed except using ‘–socket’ instead.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Extending Python With C (1)]]></title>
+    <link href="http://zjuntor.info/2011/12/extending-python-with-c-1/"/>
+    <updated>2011-12-16T00:00:00+08:00</updated>
+    <id>http://zjuntor.info/2011/12/extending-python-with-c-1</id>
+    <content type="html"><![CDATA[<p>Recently, I read about how to extend Python(CPython) with C.  Beyond my expectation, the macros, variety of predefined functions and types in source files are so difficult to read that  I have made such a tiny progress.</p>
+
+<p>There are three main aspects of extending Python, build-in functions(methods), new types and embedding Python in other languages(C).  I just have picked up the first, extending build-in functions (methods).</p>
+
+<p>Support that there is a C function to calculate factorial of a natural number.</p>
+
+<pre class="brush:applescript">int fact(int n){
+    if(n &lt;=1)
+        return 1;
+    else
+    return n * fact(n-1);
+}</pre>
+
+<p>To use this function in Python, we need encapsulate it, and add it to a Python module.</p>
+
+<p>First, using Python C API to encapsulate function “fact”</p>
+
+<pre class="brush:cpp">PyObject* wrapper(PyObject* self,PyObject* args){
+    int n,res;
+    if(!PyArg_ParseTuple(args,"i",&amp;n))
+        return NULL;
+    res = fact(n);
+    return Py_BuildValue("i",res);
+}</pre>
+
+<p>Then initial a method table, add function “wrapper” to it</p>
+
+<pre class="brush:applescript">static PyMethodDef DemoMethods[] = {
+    {"fact",wrapper,METH_VARARGS,"Calculate n!"},
+    {NULL,NULL,0,NULL}
+};</pre>
+
+<p>At last, initial a new module with method above</p>
+
+<pre class="brush:cpp">void initdemo(){
+    (void) Py_InitModule("demo",DemoMethods);
+}</pre>
+
+<p>Now we can write a setup.py script to install and use it</p>
+
+<pre class="brush:py">from distutils.core import setup,Extension
+    setup(
+    name = 'demo',
+    version = '0.0.1',
+    ext_modules = [Extension('demo',['demo.c'])],
+)</pre>
+
+<p>Install (recommended in virtualenv) and use it</p>
+
+<pre class="brush:shell">python setup.py install
+&gt;&gt;&gt; import demo
+&gt;&gt;&gt; demo.fact(10)
+3628800
+&gt;&gt;&gt;</pre>
+
+<p>This demo works well on my Fedora 16 Linux. For a win32 user, you can use a MSVC compiler or use GNU gcc compiler with setup.cfg file in the same directory of setup.py, and specify the compiler as below</p>
+
+<pre class="brush:shell">[build]
+compiler=mingw32</pre>
+
+<p>ref: <a href="http://docs.python.org/extending/index.html" target="_blank">Extending and Embedding the Python Interpreter</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Method Decorator of Python]]></title>
+    <link href="http://zjuntor.info/2011/12/method-decorator-of-python/"/>
+    <updated>2011-12-03T00:00:00+08:00</updated>
+    <id>http://zjuntor.info/2011/12/method-decorator-of-python</id>
+    <content type="html"><![CDATA[<p>After half of day, I have gotten the main idea of Method Decorator of Python.</p>
+
+<p>First,  Decorator with no additional arguments except the method to be transformed</p>
+
+<pre class="brush:py">@staticmethod
+def methodName(args...):
+    #do sth</pre>
+
+<p>is equivalent to</p>
+
+<pre class="brush:py">def methodName(args...):
+    #do sth
+methodName = staticmethod(methodName)</pre>
+
+<p>Then, Decorator with arguments except the method to be transformed</p>
+
+<pre class="brush:py">def decorator(**attrs):
+    def wrapper(method):
+        for k in attrs:
+            setattr(method,k,attrs[k])
+        return method
+    return wrapper
+
+@decorator(version='x.x.x', author='whatever')
+def methodName(args...):
+    #do sth</pre>
+
+<p>is equivalent to</p>
+
+<pre class="brush:py">def methodName(args...):
+    #do sth
+methodName = decorator(version='x.x.x', author='whatever')(methodName)</pre>
+
+<p>Finally, let’s write piece of code  kind of complex. This decorator adds some attributes to method transformed, and verifies if the argument of the method to be transformed is an int type instance</p>
+
+<pre class="brush:py">def decorator(**kwds):
+    def wrapper(method):
+        def verify(arg):
+            assert isinstance(arg,int)
+            return method(arg)
+        for k in kwds:
+            setattr(verify, k, kwds[k]):
+        return verify
+    return wraper
+
+@decorator(version='x.x.x', author='whatever')
+def methodName(arg):
+    #do sth</pre>
+
+<p>is equivalent to</p>
+
+<pre class="brush:py">def methodName(arg):
+    #do sth
+methodName = decorator(version='x.x.x',author='whatever')(arg)</pre>
+
+<p>As expected, there is also Class Decorator for Python, similar with Method Decorator.</p>
+
+<p>ref: <a href="http://www.python.org/dev/peps/pep-0318/" target="_blank">PEP 0318</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[After Having Xulrunner Updated to 2.0.1]]></title>
+    <link href="http://zjuntor.info/2011/05/after-having-xulrunner-updated-to-2-0-1/"/>
+    <updated>2011-05-26T00:00:00+08:00</updated>
+    <id>http://zjuntor.info/2011/05/after-having-xulrunner-updated-to-2-0-1</id>
+    <content type="html"><![CDATA[<p>After a recent package update, my Eclipse began crashing with alarming frequency. After some research, it seems that Eclipse(helios) does not support xulrunner 2+, but Firefox 4 uses xulrunner 2+ now.</p>
+
+<p>Instead to fix this compatibility problem, I chose to set Eclipse to use WebKitGTK.</p>
+
+<blockquote>
+  <p>edit eclipse.ini in eclipse home, &amp; add the following line:</p>
+
+  <p>-Dorg.eclipse.swt.browser.UseWebKitGTK=true</p>
+</blockquote>
+
+<p>But this solution seems not work for me. Then, I searched it and found the problem. For using gnome 3, the WebKit library name was changed from libwebkit-x.so to libwebkitgtk-x.so. So I did</p>
+
+<blockquote>
+  <p>in /usr/lib/ :</p>
+
+  <p>sudo ln -s libwebkitgtk-x.so libwebkit-x.so</p>
+</blockquote>
+
+<p>Now, my Eclipse works as usual again.</p>
+
+<p>ref: <a href="http://blog.dmaggot.org/2010/12/using-webkit-and-eclipse-helios/" target="_blank">Using WebKit and Eclipse Helios</a></p>
+]]></content>
+  </entry>
+  
+</feed>

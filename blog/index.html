@@ -1,0 +1,870 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Life Stream</title>
+  <meta name="author" content="zjuntor">
+
+  
+  <meta name="description" content="最近一段时间学习数据挖掘，机器学习和模式识别相关的东西，频繁地遇到优化的问题，特别是机器学习与模式识别，很多问题最终都归结为一个关于需要学习的参数的目标函数求极值。因此甚至有人认为数据挖掘，机器学习和模式识别在某种程度上就是优化。虽然有些夸张，毕竟数据挖掘， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://zjuntor.info">
+  <link href="/blog/favicon.png" rel="icon">
+  <link href="/blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Life Stream" type="application/atom+xml">
+  <script src="/blog/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/blog/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX", "output/HTML-CSS"],
+  tex2jax: {
+    inlineMath: [ ['$', '$'] ],
+    displayMath: [ ['$$', '$$']],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  messageStyle: "none",
+  "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG" type="text/javascript"></script>
+
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/blog/">Life Stream</a></h1>
+  
+    <h2>Here comes the one name written in water.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:zjuntor.info" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/blog/about.html">About</a><li>	
+  <li><a href="/blog/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/Optimization0/">Optimization (0)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-17T00:12:24+08:00" pubdate data-updated="true">Jul 17<sup>th</sup>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近一段时间学习数据挖掘，机器学习和模式识别相关的东西，频繁地遇到优化的问题，特别是机器学习与模式识别，很多问题最终都归结为一个关于需要学习的参数的目标函数求极值。因此甚至有人认为数据挖掘，机器学习和模式识别在某种程度上就是优化。虽然有些夸张，毕竟数据挖掘，机器学习和模式识别更重要的是解决问题的思路和策略，但是优化作为最终解决问题的工具，重要性也不言而喻。</p>
+
+<p>言归正传，优化问题是指这样一类问题（1）：</p>
+
+<script type="math/tex; mode=display">
+\begin {eqnarray*}
+min\ f(x)
+\newline
+s.t.\ x \in K
+\end {eqnarray*}
+</script>
+
+<p>问题中$f(x)$为目标函数，$x$为向量，$K$为可行域，为约束集合$C$限定的区域，而$C$通常由等式与不等式组成，此时$C=E\cup I$，其中等式约束集合记为$E$，不等式约束集合记为$I$。$C$也可以为空集，此时即无约束优化。为了保证一致性以及表示方便，约定用小写英文字母表示向量，用小写希腊字母表示标量，用$g$表示向量$\nabla f(x)$，$G$表示Hessian矩阵$\nabla ^2 f(x)$.</p>
+
+<p>求解优化问题（1），通常通过给定初始值$x _0$，构造序列 $x _{k+1}=x _k + \alpha _k d _k$使得序列$f(x _k)$收敛来实现($\alpha _k &gt;0$)。其中$x _0$为初始值，$\alpha _k$为步长，$d _k$为下降方向。通常情况下$x _0$的选取具有随意性，于是优化问题就归结为寻找使得$f(x _k)$收敛的序列$\alpha _k$和$d _k$。因此后面几乎所有的内容都是围绕如何求解$\alpha _k$和$d _k$使得算法收敛，算法更稳定，收敛速度更快。</p>
+
+<p>此外，近年来，关于优化问题（1）的求解又发展出了一些数值解法外的智能解法，如粒子群，蚁群，模拟退火以及遗传算法，相较于数值解法，这些智能解法在一定程度上具有天然的并行结构（每一步都可以分解为若干并行的子问题的求解），利于并行算法的设计，缺点是目前尚未有明确的理论证明其收敛性。Optimization（x）系列作为学习数值优化的笔记，智能优化算法就不涉及了。</p>
+
+<p>下面讨论$x^*$为$f(x)$的一个局部极小点所满足的条件（$f(x)$满足必要的连续，可微条件）:</p>
+
+<p><strong>Theorem 1（一阶必要条件）</strong> ： $x ^ *$为$f(x)$的一个局部极小点，则$g(x ^ *)=\nabla f(x ^ *)=0$.</p>
+
+<p><strong>Theorem 2（二阶必要条件）</strong> ： $x ^ *$为$f(x)$的一个局部极小点，则矩阵$G(x ^ *)$半正定，即$G(x ^ *)\geq 0$.</p>
+
+<p><strong>Theorem 3（充分条件）</strong> ： $g(x ^ *)=\nabla f(x ^ *)=0$，矩阵$G(x ^ *)$正定，即$G(x ^ *)&gt; 0$，则$x ^ *$为$f(x)$的一个局部极小点.</p>
+
+<p><strong>Theorem 4（凸函数充要条件）</strong> ： $f(x)$为凸函数，$g(x ^ *)=\nabla f(x ^ *)=0$ $\Leftrightarrow$  $x ^ *$为$f(x)$的一个局部极小点。</p>
+
+<p>此外，再讨论$d _k$为$f(x _ k)$处的下降方向的充要条件（$f(x)$满足必要的连续，可微条件）：</p>
+
+<p><strong>Theorem 5（下降方向充要条件）</strong> ： ${d _ k}^T g(x _ k) = {d _ k}^T \nabla f(x _ k) &lt;0$ $\Leftrightarrow$ ${d _ k}$为$x _ k$处的一个下降方向。</p>
+
+<p>本节主要讨论了一些优化问题所需的基础知识，所列出的5个定理证明起来并不复杂，多元函数泰勒展开，取前面必要的几阶，再带入条件一路就下来了。下节开始，从无约束优化开始，开始讨论具体的优化方法。</p>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/%e5%ae%81%e5%a4%8f%e5%b7%9d/">宁夏川</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-10T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>“宁夏川，两头子尖，东靠黄河西靠吗贺兰山。”</p>
+
+<p>刚刚过去的五一小长假去了蓄谋已久的宁夏。假期的第一天晚上从西安出发，以工作四年后的吨位窝了一晚上的上铺，一觉醒来车窗外已是晨曦中的宁夏大地。</p>
+
+<p><img class="alignnone" alt="晨曦中的宁夏川" src="http://i.imgur.com/z7LOqWrl.jpg" width="640" height="427" /></p>
+
+<p>东靠黄河</p>
+
+<p><img class="alignnone" alt="东靠黄河" src="http://i.imgur.com/f3plhTml.jpg" width="640" height="427" /></p>
+
+<p>第一站，我去了位于宁夏最西部的中卫市。作为一座典型的大西北小城，中卫自然没有江南小城的山川锦绣，却难能可贵的干净整洁，尤其在大西北沙尘天气频繁的春季，实在难得。在中卫的一天，我去了沙坡头景区。景区的南半部分位于黄河岸边，羊皮筏子、黄河鱼头都是不能错过的体会；景区的北半部分是广袤的沙漠景观，如果时间充裕，骑骆驼或是合伙拼车再向北走上十公里左右就是腾格里了。</p>
+
+<p><img class="alignnone" alt="沙坡头" src="http://i.imgur.com/D9whZ7Nl.jpg" width="640" height="427" /></p>
+
+<p>第二站，从中卫出发，坐火车经青铜峡，我到了银川。银川有老城和新城之分，老城主要是兴庆区主部、金凤区大部，是市中心所在；新城主要是西夏区，据的哥介绍，新城亦新亦旧，对于老银川人来说，新城是当初的工业区，相对于老银川城来说就是新，而后工厂大多衰败反倒不如老城，于是相对于老银川城来说就又是旧，再后来新城再开发，就又成了新城。到银川的第一天晚上我住在位于新城的怀远西路与同心街什子附近，虽说是这里到贺兰山近，但搭旅游大巴的地方却在老城，于是第二天就搬到了老城，在利民街与解放西街什子附近住下，这里离旅游汽车站和新月广场的距离适中，于是就一直住到回西安。特别值得一提的是酒店旁边有一家金鼎香牛肉面，牛肉面、鸡蛋拌面、羊排揪面…在深夜光是看到这些名字就有些不能自己了。</p>
+
+<p>西靠吗贺兰山</p>
+
+<p><img class="alignnone" alt="西靠吗贺兰山" src="http://i.imgur.com/ljookP0l.jpg" width="640" height="427" /></p>
+
+<p>“黄河的水流富呀吗富两岸，盼只盼那个吃饭不靠天。”</p>
+
+<p>黄河滋养了两岸，可客观地说我大西北的金川银川米粮川还是不比我国中东部地区，但是我大西北的民风淳朴，每每想起来都不由得自我感到一阵羞愧。</p>
+
+<p> </p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/i-am-back/">I Am Back</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-16T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>距离上次更新，已七月有余，最近在度过了春节后30*11H 的传说中某士康般的生活后，终于有了点坐下来码些字的情怀，顺便回顾一下过去的一年，再顺便给大伙拜个晚年（背景音起：亲爱的观众朋友们，想死你们了）。</p>
+
+<p>过去的一年，大多数时间都在为两年前的那个<a href="blog.torrge.me/2011/02/迎来，送往/" target="_blank">方向</a>忙碌，虽然最终结果略有遗憾，望眼北方依然只看见月亮，可又有什么关系，兴许走着走着路就有了。除此之外，去年上半年，略仔细地学习了计算机专业的几门基础课，期间好几次有在淘宝买点元件，买个电烙铁的冲动，好在囊中羞涩，及时的刹了车。另外还有几门有意思的课，打算在今年给凑齐了。八月份前后的一段时间，略深入地了解了JavaScript，这在读过一部分Python源代码后，还是别有那么一点意思。</p>
+
+<p>至于生活方面，过去的一年，整体上依旧平稳。自己的事碰到工作加班加到了一个新的高度，于是去年一年就没有走出去参加什么有意思的活动，三年多来张楚第二次回乡演出也错过了。去年下半年的时候，小外甥女打电话过来说保送到了东大读研，这对我触动挺大的，上次小外甥女升学打电话过来，我还在吃散伙饭，于是不免俗地感慨光阴似箭，尤其在这样一个日新月异的时代。这两年来越来越觉得，人最幸福的事，莫过于能自由支配自己的时间，尤其是我们这行，身上的记号不断地提醒你你的时间又少了一年。</p>
+
+<p>如果顺利，下半年的时候，就要暂时离开西安了，虽然不清楚离开能做些什么，但至少不离开可能什么都做不了。目前，麻烦的事大部分都暂告一段落，这就有精力去着手落实原来的一些打算，未来的事依然不宜打算地过细，只希望新的一年，能依然坚定，更专注些。</p>
+
+<p>最后，祝愿大伙新的一年，事多能随愿（背景音再：难忘今宵，难忘今宵…）。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/something-about-learning-javascript/">Something About Learning JavaScript</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-11T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Recently, I learned JavaScript forward, using this <a href="http://book.douban.com/subject/3182419/" target="_blank">book</a>, along with the <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Guide" target="_blank">JavaScript Guide</a> from Mozilla Developer Network. Here are some note about the key point to me.</p>
+
+<p><code>this</code> keyword</p>
+
+<p>There is a statement in the <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Expressions_and_Operators#this" target="_blank">Guide</a>:</p>
+
+<blockquote>
+  <p>Use the <code>this</code> keyword to refer to the current object. In general, <code>this</code> refers to the calling object in a method.</p>
+</blockquote>
+
+<p>The key point is the second sentence, which clearly and exactly explains that <code>this</code> keyword refers the calling object. This is enough, and the first sentence, let it go the hell.</p>
+
+<p>Closure</p>
+
+<p>After a function has returned, the local environment (local variables etc.) can not be collected immediately by GC, when there are some external reference to the local environment. This can be made by assigning a nested function which uses the local variables to an external variable in the function, or returning the nested function and assigning it to external variables. for example:</p>
+
+<pre class="brush:js">//closure#1
+var getter,setter;
+(function(){
+    var value=0;
+    getter = function(){return value;};
+    setter = function(v){value = v;};
+})();
+//closure#2
+function iterator(x){
+    var i = 0;
+    return function(){return x[i++];};
+}</pre>
+
+<p>Constructor</p>
+
+<p>A constructor is an function object just looks like normal function objects which is use to create new objects. The constructor property of an object is the constructor using which the object made(it’s a convenience and by default). When a constructor is called using <code>new</code> operator, there something happened behind the scene:</p>
+
+<ul>
+  <li>JavaScript engine creates a generic object and assignes it to <code>this</code> , and then passes it to the constructor.</li>
+  <li>assigning contructor.prototype to the internal property of object <code>this</code> refers, in Firefox the property is ‘__proto__’, which is used for making up the prototype chain. Then assign the constructor.prototype.constructor object to constructor property of object <code>this</code> refers.</li>
+  <li>finally, make up the rest of the object with the code in the constructor and then return the object <code>this</code> refers to implicitly.</li>
+</ul>
+
+<p>Prototype</p>
+
+<p>JavaScript is object-based, object-oriented language. it use prototype to implement the inheritance. For example:</p>
+
+<pre class="brush:applescript">var Shape = function(){ this.info = 'Shape'; }
+var Circle = function(diameter){ this.diameter = diameter; }
+Circle.prototype = new Shape();
+Circle.prototype.constructor = Circle;</pre>
+
+<p>When try to access a property of an object, the JavaScript engine searches the object first, if not found, then up along the prototype chain to the end until the property has been found, if still not found, return undefined.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/setup-python-web/">Setup Python Web</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-13T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This weekend, I tried to setup Python Web environment. At beginning, I tried Apache http server &amp; mod_python, but shamefully failed.  Then, I turned to Nginx &amp; uwsgi.</p>
+
+<p>Nginx, as its official claimed, is a high performance http server &amp; reverse proxy. As a reverse proxy, in my perception, it just responses the request and then distributes it to the according server which is the one really processing the request.  In the Nginx &amp; uwsgi couple, the real server to process request is uwsgi, which implements its own uwsgi protocol &amp; wsgi protocal.</p>
+
+<p>Using this architecture, there several advantages, for example, we can use Nginx as a load balancer, in spite of that I don’t really understand this detailly.</p>
+
+<p>install nginx:</p>
+
+<pre class="brush:shell">#in extracted folder, may need su privilege
+./configure --prefix=where/to/install/ngnix
+make &amp; make install</pre>
+
+<p>install uwsgi:</p>
+
+<pre class="brush:shell">#using virtualenv
+source path/to/yourvirtualenv/bin/activate
+easy_install uwsgi</pre>
+
+<p>configure nginx:</p>
+
+<pre class="brush:plain">#in nginxhome/conf/nginx.conf
+server{
+		listen 8081;
+		server_name localhost;
+		location /{
+			include uwsgi_params;
+			uwsgi_pass localhost:3031;
+			root  path/to/demo/;		
+		}	
+	}</pre>
+
+<p>write wsgi script(in folder path/to/demo/):</p>
+
+<pre class="brush:applescript">from bottle import route, run, default_app  
+@route('/demo')  
+def index():  
+	return "it works."
+if __name__ == '__main__':
+	run(host='localhost', port=3032)
+else:
+	application = default_app()</pre>
+
+<p>now, start nginx &amp; uwsgi:</p>
+
+<pre class="brush:shell">nginxhome/sbin/nginx
+#in virtualenv
+uwsgi --socket localhost:3031 -H virtualenvname --wsgi-file path/to/demo.py</pre>
+
+<p>something to be marked:</p>
+
+<p>1, during install, using ldd to make out the dependencies;</p>
+
+<p>2, there more details to configure of nginx &amp; uwsgi if needed.</p>
+
+<p>3, in many examples, to start uwsgi, ‘–http’ option is used, but that may failed except using ‘–socket’ instead.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/%e7%9c%bc%e6%9c%9b%e7%9d%80%e5%8c%97%e6%96%b9/">眼望着北方</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-07T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>离上次更新blog 已有半年, 这半年的表现愧对这个blog 了, 并且在将来相当长的一段时间里还得愧对.</p>
+
+<p>今天加班结束离开办公室, 挎着相机就直奔位于南三环的电视塔, 那里去年搭建了一个号称亚洲最大的空中玻璃观景台.</p>
+
+<p>现在这个阶段, 花个一天半天去个别的什么地方, 实在是有点舍不得, 于是两个小时能够来回的电视塔就成了首选, 就是这个活动, 也足足酝酿了半年多.</p>
+
+<p>三点出门, 三点半到, 等登上塔顶, 才想起雨刚停, 又是隔着玻璃, 于是朝北望去就是这样的</p>
+
+<p><img class="alignnone" title="Toward North" src="http://i.imgur.com/q8eW5l.jpg" alt="Toward North" width="640" height="427" /></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/01/year-of-2011/">Year of 2011</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-23T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>跟去年一样，写个跨年总结。</p>
+
+<p>过去的2011 年还算平稳，上半年有短暂的起伏，好在波澜不惊，到了四月底，就都入了正轨。</p>
+
+<p>四月底前的几个月在重新学习C，几个月下来，以前说过的那些自大的话就权当玩笑了，谁叫吹牛总能逃税。</p>
+
+<p>四月到现在，看了看理论方面的一些书，这对我是件困难的事情，对于抽象能力比较差的人来说，看不见实物、原型简直就是要了命了，好在10 年就迁移到Linux，情况也就好了不少，以至于没有出现昏昏欲睡、撞墙等不和谐的现象出现。另外，这段时间还穿插着继续了解了Python 的一些方面，了解了一部分Python 的 Standard Library，看了部分CPython 的源代码。另外，在六月的时候，曾试图重拾Java，可确实由于拖沓，还有精力的原因，没能继续深入下去，颇为遗憾。</p>
+
+<p>至于生活方面，依旧平稳，如去年一样。</p>
+
+<p>原本期待今年的总结能多写点，可事与愿违，能写的也就这点，一是效率没有比10年提高太多；二是生活方面依旧平稳，无多少可写可感慨。如果非得感慨点啥，那就是年底blog 被黑了，对于一个天天吃食堂的人来说，这简直是匪夷所思啊。</p>
+
+<p>最后写点对来年的期待，希望在2012 年能认真些，不要再粗枝大叶了；能更专注些，不善长的方面就不要再瞎琢磨了；更坚定些，不要再有犹豫徘徊了。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/12/extending-python-with-c-1/">Extending Python With C (1)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-16T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Recently, I read about how to extend Python(CPython) with C.  Beyond my expectation, the macros, variety of predefined functions and types in source files are so difficult to read that  I have made such a tiny progress.</p>
+
+<p>There are three main aspects of extending Python, build-in functions(methods), new types and embedding Python in other languages(C).  I just have picked up the first, extending build-in functions (methods).</p>
+
+<p>Support that there is a C function to calculate factorial of a natural number.</p>
+
+<pre class="brush:applescript">int fact(int n){
+    if(n &lt;=1)
+        return 1;
+    else
+    return n * fact(n-1);
+}</pre>
+
+<p>To use this function in Python, we need encapsulate it, and add it to a Python module.</p>
+
+<p>First, using Python C API to encapsulate function “fact”</p>
+
+<pre class="brush:cpp">PyObject* wrapper(PyObject* self,PyObject* args){
+    int n,res;
+    if(!PyArg_ParseTuple(args,"i",&amp;n))
+        return NULL;
+    res = fact(n);
+    return Py_BuildValue("i",res);
+}</pre>
+
+<p>Then initial a method table, add function “wrapper” to it</p>
+
+<pre class="brush:applescript">static PyMethodDef DemoMethods[] = {
+    {"fact",wrapper,METH_VARARGS,"Calculate n!"},
+    {NULL,NULL,0,NULL}
+};</pre>
+
+<p>At last, initial a new module with method above</p>
+
+<pre class="brush:cpp">void initdemo(){
+    (void) Py_InitModule("demo",DemoMethods);
+}</pre>
+
+<p>Now we can write a setup.py script to install and use it</p>
+
+<pre class="brush:py">from distutils.core import setup,Extension
+    setup(
+    name = 'demo',
+    version = '0.0.1',
+    ext_modules = [Extension('demo',['demo.c'])],
+)</pre>
+
+<p>Install (recommended in virtualenv) and use it</p>
+
+<pre class="brush:shell">python setup.py install
+&gt;&gt;&gt; import demo
+&gt;&gt;&gt; demo.fact(10)
+3628800
+&gt;&gt;&gt;</pre>
+
+<p>This demo works well on my Fedora 16 Linux. For a win32 user, you can use a MSVC compiler or use GNU gcc compiler with setup.cfg file in the same directory of setup.py, and specify the compiler as below</p>
+
+<pre class="brush:shell">[build]
+compiler=mingw32</pre>
+
+<p>ref: <a href="http://docs.python.org/extending/index.html" target="_blank">Extending and Embedding the Python Interpreter</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/12/method-decorator-of-python/">Method Decorator of Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-03T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>After half of day, I have gotten the main idea of Method Decorator of Python.</p>
+
+<p>First,  Decorator with no additional arguments except the method to be transformed</p>
+
+<pre class="brush:py">@staticmethod
+def methodName(args...):
+    #do sth</pre>
+
+<p>is equivalent to</p>
+
+<pre class="brush:py">def methodName(args...):
+    #do sth
+methodName = staticmethod(methodName)</pre>
+
+<p>Then, Decorator with arguments except the method to be transformed</p>
+
+<pre class="brush:py">def decorator(**attrs):
+    def wrapper(method):
+        for k in attrs:
+            setattr(method,k,attrs[k])
+        return method
+    return wrapper
+
+@decorator(version='x.x.x', author='whatever')
+def methodName(args...):
+    #do sth</pre>
+
+<p>is equivalent to</p>
+
+<pre class="brush:py">def methodName(args...):
+    #do sth
+methodName = decorator(version='x.x.x', author='whatever')(methodName)</pre>
+
+<p>Finally, let’s write piece of code  kind of complex. This decorator adds some attributes to method transformed, and verifies if the argument of the method to be transformed is an int type instance</p>
+
+<pre class="brush:py">def decorator(**kwds):
+    def wrapper(method):
+        def verify(arg):
+            assert isinstance(arg,int)
+            return method(arg)
+        for k in kwds:
+            setattr(verify, k, kwds[k]):
+        return verify
+    return wraper
+
+@decorator(version='x.x.x', author='whatever')
+def methodName(arg):
+    #do sth</pre>
+
+<p>is equivalent to</p>
+
+<pre class="brush:py">def methodName(arg):
+    #do sth
+methodName = decorator(version='x.x.x',author='whatever')(arg)</pre>
+
+<p>As expected, there is also Class Decorator for Python, similar with Method Decorator.</p>
+
+<p>ref: <a href="http://www.python.org/dev/peps/pep-0318/" target="_blank">PEP 0318</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/10/adjust-and-then-go-ahead/">Adjust and Then Go Ahead</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-29T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>从上周末开始开始看<a href="http://book.douban.com/subject/1787434/" target="_blank">&lt;Pro JSP 2&gt; </a>这本书。在学校的时候为了完成课程作业，曾功利地看过那本红皮的JSP 的书，不过说来惭愧，现在脑子里就剩下那几个名词了，写个Hello world 还得靠IDE。</p>
+
+<p>本来打算看完这本书然后一路下去，详细了解一下整个JavaEE 技术栈。无奈基础实在是太差，光是要想把JSP 和 servlet 相关的大大小小的细节理顺了就需要同时看一堆东西，就拿XML 来说，光知道XML 结构是远不够的。然而我的现状是，同时最多展开两个主题就已经不错了，所以琢磨了一下，这本书看完了后，暂时停下来，在未来相当长的一段时间里，把一些Java 的基础的知识仔细琢磨一下，当然重要的是实践，争取闲暇的时候能写点有意思的东西，娱乐一下。</p>
+
+<p>另外，感慨一下，以前用IDE 不觉得，这次用VIM 写Servlet，JSP 页面和相关配置xml，没少遇坎坷，当然IDE 固然好，但是有些事一开始就交给IDE 了，那永远就没有了解它的机会了。</p>
+
+<p>原来拟了一个长的有些二逼的标题，琢磨了一下，我从来没有嫌过代码太短，也不曾写过什么能叫人会心一笑的缩进，总结一下，我就是个普通青年，那么长的标题不合适。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page2">&larr; Older</a>
+    
+    <a href="/blog/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/Optimization0/">Optimization (0)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/%e5%ae%81%e5%a4%8f%e5%b7%9d/">宁夏川</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/i-am-back/">I Am Back</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/08/something-about-learning-javascript/">Something About Learning JavaScript</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/07/setup-python-web/">Setup Python Web</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/zjuntor">@zjuntor</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'zjuntor',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/blog/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/zjuntor?count=3&amp;sort=date&amp;callback=renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/zjuntor">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - zjuntor -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zjuntor';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

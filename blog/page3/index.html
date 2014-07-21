@@ -1,0 +1,818 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Life Stream</title>
+  <meta name="author" content="zjuntor">
+
+  
+  <meta name="description" content="接着说与C 有关的事，正整数位向量排序的C 实现。 位向量(Bit Array) 位向量(Bit Array)，说的是这么一个东西，它可以用N 个Bit 来表示一个所有元素都小于 N的简单的非负整数的集合。譬如，“01110100100001000000” 可以用来表示集合 {1,2,3,5,8, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://zjuntor.info/page3">
+  <link href="/blog/favicon.png" rel="icon">
+  <link href="/blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Life Stream" type="application/atom+xml">
+  <script src="/blog/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/blog/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX", "output/HTML-CSS"],
+  tex2jax: {
+    inlineMath: [ ['$', '$'] ],
+    displayMath: [ ['$$', '$$']],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  messageStyle: "none",
+  "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG" type="text/javascript"></script>
+
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/blog/">Life Stream</a></h1>
+  
+    <h2>Here comes the one name written in water.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:zjuntor.info" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/blog/about.html">About</a><li>	
+  <li><a href="/blog/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/%e4%b8%8ec%e6%9c%89%e5%85%b3%e4%ba%8c/">与C有关(二)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-27T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>接着说与C 有关的事，正整数位向量排序的C 实现。</p>
+
+<p><strong>位向量(Bit Array)</strong></p>
+
+<p>位向量(Bit Array)，说的是这么一个东西，它可以用N 个Bit 来表示一个所有元素都小于 N的简单的非负整数的集合。譬如，“01110100100001000000” 可以用来表示集合 {1,2,3,5,8,13}。</p>
+
+<p><strong>正整数位向量排序</strong></p>
+
+<p>正整数位向量排序说的是这么一回事，用一个位向量表示要排序的正整数集合，然后排序。具体做法是：</p>
+
+<ul>
+  <li>从文件中循环读入要排序的正整数，并把位向量的对应bit 置为1。譬如读入正整数10，就将位向量的第十个Bit 置为1(当然，前提是位向量中所有位都已初始化为0)；</li>
+  <li>从第一个Bit 开始到最后一个Bit 顺序遍历整个位向量，如果某个Bit 值为1，就将它输出到结果文件。譬如第22个Bit 值为1，就将22输出到文件；</li>
+  <li>最后，打开结果文件，结果，那就是了。</li>
+</ul>
+
+<p><strong>正整数位向量排序的C 实现</strong></p>
+
+<p>假定有一千万个小于一千万的正整数要排序，用一个unsign char 数组来存储各个Bit。</p>
+
+<pre class="brush:cpp">unsigned char vector_array[1250000];</pre>
+
+<p>接下来两个函数用于实现将vector_array 中指定的Bit 设为1，和获取vector_array 中指定的Bit 的值。</p>
+
+<pre class="brush:cpp">/*
+**将vector_array 表示的位向量中第index 个Bit 置为1
+*/
+void set_value_at(unsigned char vector_array[],long index){
+	long real_index = index / 8;
+	long bit_index_at = index % 8;
+	vector_array[real_index] = vector_array[real_index] | (1 &lt;&lt; bit_index_at);
+}
+
+/*
+**获取vector_array 表示的位向量中第index 个Bit 的值
+*/
+unsigned char get_value_at(unsigned char const vector_array[],long index){
+	long real_index = index / 8;
+	long bit_index_at = index % 8;
+	unsigned char bits = vector_array[real_index];
+	return (bits &gt;&gt; bit_index_at) % 2;
+}</pre>
+
+<p>排序过程</p>
+
+<pre class="brush:cpp">int
+main(int argc, char **argv){
+	FILE *fp = fopen("/path/to/data.bin","rb");
+	long value;
+	long index;
+	unsigned char vector_array[10000000];
+
+	for(index=0;index&lt;10000000;index++)
+		vector_array[index] = 0;
+
+	while(!feof(fp)){
+		fread(&amp;value,sizeof value,1,fp);
+		set_value_at(vector_array,value);
+	}
+
+	fclose(fp);
+	fp = fopen("/path/to/data_result.bin","wb");
+
+	for(index=0;index&lt;10000000;index++)
+		if(value = get_value_at(vector_array,index))
+			fwrite(&amp;index,sizeof index,1,fp);
+	fclose(fp);
+
+	return 0;
+}</pre>
+
+<p>正整数位向量排序由于只有两个循环，一个用于将数据存入位向量，一个用于结果输出，如果算那个初始化位向量的循环，算法复杂度仍然还是O(N)，同时粗略的估计一下，如果每个正整数都用一个long 整形表示的话，大概需要近40M内存。而采用位向量，则需要1M+的内存，简直太梦幻了。然而，正整数位向量排序有如下的限定条件：</p>
+
+<ul>
+  <li>各个整数没有重复出现；</li>
+  <li>必须是正整数(这句是废话)。</li>
+</ul>
+
+<p>总结一下，数据结构决定算法。</p>
+
+<p>Ref: <a href="http://book.douban.com/subject/1484451/" target="_blank"><programming pearls="">&lt;/a&gt;</programming></a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/%e4%b8%8ec%e6%9c%89%e5%85%b3/">与C有关</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-20T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>如题，现在开始说说与C有关的事。</p>
+
+<p>用一个有意思的例子开始话题，考虑有如下代码段：</p>
+
+<pre class="brush:cpp">int array[]={1,2,3};
+</pre>
+
+<p>array[2]，就是整形一维数组array的第三个元素。那么 2[array] 呢？ 好，你没看错，我也没码错。而这个2[array] 确实也是整形一维数组array的第三个元素，跟array[2] 是等价的。</p>
+
+<p>这个诡异的技巧，源于C实现下标的方法。换个角度理解，[] 操作符作用于array，2两个操作数，等价于 *(array+2)，那么*(2+array) 也是等价的。</p>
+
+<p><strong>递归Fibonacci 的C 实现</strong></p>
+
+<pre class="brush:cpp">long
+fibonacci(int n){
+    if(n&lt;2)
+        return 1;
+    return fibonacci(n-1) + fibonacci(n-2);
+}</pre>
+
+<p>想必朋友们学递归的时候跟我一样，用的是那本绿皮书，也是用Fibonacci 数列的生成来作为例子的，以至于看到Fibonacci 条件反射地想起上面的递归实现。那这么做开销有多大呢？下面来看看。</p>
+
+<p>粗略地估计一下，在递归计算fibonacci(10) 的时候 fibonacci(3) 的值被重复计算了21 次，n 值更大的时候，开销是惊人的。</p>
+
+<p>严格的算法分析结果证实，采用上述的递归实现来计算Fibonacci 数列的开销为 O(1.5^N)，确实很可怕。</p>
+
+<p>事实上，尾部递归(tail recursion) 可以很方便地转换城简单的循环，所谓尾部递归(tail recursion)，即递归调用是函数的最后一项任务的递归。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/%e8%bf%99%e4%b8%80%e5%88%87%e6%89%8d%e5%88%9a%e5%88%9a%e4%b8%8a%e8%b7%af/">这一切才刚刚上路</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-11T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>过去的一段时间遇到了一些麻烦，状态还是出现了一些起伏。</p>
+
+<p>这个月早些时候，Blog  因为某种我无法获知的原因，不能正常使用了。然后给服务商接连去了两条Ticket，再然后收到两封Request Deny 的邮件，当时心都凉了，毕竟那是我一个月的生活费啊。无奈之余选择了现在这种方案，同时迁移到了大洋彼岸的数据中心。当然额外的一笔支出在所难免，好在这次价格低了不少。</p>
+
+<p>其实麻烦的事不止这一件，后面发生的变故才是真正的麻烦，一度影响到了正常的计划。细节的就不细说了，重要的是后来想通了，尽自己的能量，至于结果往往不是我能够左右的，只是倒时候灵活一些，总会有办法的。后来事实也证明，一切并没有想象的那么糟。</p>
+
+<p>这次是明确了方向后遇到的第一次困难，虽然之前对这一路上方方面面的困难有所准备，可当困难出现的一刹那，还是不淡定了，现在想来，确实应该检讨检讨。总结一下，这次考验暴露出我还存在的一个问题：遇事还不够沉着冷静。另外这段时间其它一些发生的事也让我很意外，算是对回到西安后半年多的努力的一种肯定。</p>
+
+<p>后面的路还长着，这一切才刚刚上路。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/02/attaching-wsgi-apps-under-pylons/">Attaching WSGI Apps Under Pylons</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-09T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Pylons 对WSGI 标准(<a href="http://www.python.org/dev/peps/pep-0333/" target="_blank">PEP-0333</a>) 进行了扩展，提升了性能，同时Pylons 也支持 Normal WSGI  Apps。</p>
+
+<ol>
+  <li>创建一个Pylons 项目</li>
+</ol>
+
+<pre class="brush:shell">paster create -t pylons wsgitest</pre>
+
+<ol>
+  <li>创建一个 controller</li>
+</ol>
+
+<pre class="brush:shell">cd wsgitest
+paster controller wsgiapp</pre>
+
+<ol>
+  <li>修改controller(controllers/wsgiapp.py)</li>
+</ol>
+
+<pre class="brush:py">def WsgiappController(environ, start_response):
+    start_response('200 OK', [('Content-type', 'text/plain')])
+    return ["It works!"]</pre>
+
+<p>注意：一开始的时候我将Pylons 项目的名字直接命名为‘WSGI’ 试了几次都不能Work，从Traceback 来看报错在controllers/wsgiapp.py 的第三行有语法错误，显然事实并不如此。猜测 项目名WSGI 跟Pylons 内部有些地方可能冲突了。</p>
+
+<p>参考：<a href="http://www.python.org/dev/peps/pep-0333/" target="_blank">PEP-0333</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/02/%e8%bf%8e%e6%9d%a5%ef%bc%8c%e9%80%81%e5%be%80/">迎来，送往</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-02T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>期待我农历年底<a href="http://fanfou.com/statuses/GTq4QFA2c-4" target="_blank">最后的抱怨</a>的朋友恐怕要失望了，因为没有什么要抱怨的。生活本来就不会是一帆风顺，没点坎坷，那还叫生活啊，那叫新闻联播。</p>
+
+<p>没有写年度总结两年了，索性一回总结两年吧。</p>
+
+<p>两年前淼姐说过，你能妥协一次，就能妥协第二次，第三次。我两年的生活就证明了淼姐的话娘的是对的。</p>
+
+<p>送往</p>
+
+<p>2009年上半年，一心想去高能所没去成，情绪一塌糊涂，毕竟快四年呐，坚持了快四年呐。为了那一次考试，连托福都准备了，结果连进考场的机会都不给，所以当时说进不了考场是浮云的话才是浮云。我说没见过南京6点的太阳，那也是胡说，至少在鼓楼的时候，去浦口旁听早上的课，不6点起来，到了浦口恐怕还能赶上吃午饭。当时很少参加集体活动不是我不喜欢，我很喜欢；也不是跟大伙感情不深，在河北宣化的时候，没事的时候自己哼<一路顺风>能把自己的鼻子哼酸了。</一路顺风></p>
+
+<p>2009年下半年，我深深体会了什么叫做生活的美好，其间种种细节留给大伙去揣摩吧。唯一美中不足的是我没有自由，如果给我点自由，我一定会用我那用不完的能量给这美好锦上添点花。</p>
+
+<p>2010年上半年，我深深体会了什么叫做生活的悲剧。颠覆价值观的种种细节也留给大伙揣摩吧。其实我很感谢这半年，我的心理才可以强大到理解了“神马都是浮云”。</p>
+
+<p>2010年下半年，谢天谢地，我终于见到了久违的自由。积蓄了一年的能量啊，都释放了吧，所以这半年发生了很多事。</p>
+
+<p>跑了一个月，欠父母一屁股的债，在这座叫做家乡的城市买了一套自己的窝。虽然不清楚以后还有没有机会去住，想起来还是能给自己不少安全感的。</p>
+
+<p>工作的巧合，时隔一年重拾Python，这一重拾就一发不可收拾，相关的PyQT，PyGTK，Python Network，Pylons 一路就走了下来，其间还小规模地使用了C++原生的Qt做了些图像方面的工作，用PyGTK 作了个叫DFan豆瓣、饭否客户端的半成品。</p>
+
+<p>正经的工作，总的来说，还算平稳，挣多少银子干多少活，就是一个糊口的手段，你懂的。意外的，收获了一些不错的同事。了解我们单身都是不吃早餐上班的习惯，同事姐姐几乎天天上午给我一个茶叶蛋；带我的师傅大哥几乎天天给我们带块面包。当然关心向来都是相互，我们单身也各尽其能让工作的氛围显得尽可能和谐。我就喜欢和谐。</p>
+
+<p>这半年室友你走了，他来。年底又有了新室友，又一次验证了我宽广的胸怀。想象一下，凌晨三四点，梦里面，你跟你媳妇坐着火车、唱着歌、吃着火锅，然后就被室友跟他女朋友搁着大半个中国的吵架吵醒了。</p>
+
+<p>当然还有感情这绕不过去的难事。曾以为一切辛苦都能像糖一样接受，一切困难都能克服，碰见这件事，我就显得无能为力了。原来一切的前提突然不见了，就像在建一个通天塔，忽然回头发现地面不见了。突如其来的变故的副作用就是迅速地成长，使我平和了许多，很少有事能影响到我的情绪了。</p>
+
+<p>还有这半年，深深地体会了什么是孤独，所谓孤独不是在Blog上写出来的，而是晚上回到公寓打开电视，只为屋里有点声音而自然流露出来的。</p>
+
+<p>我们曾在田野里歌唱，在冬季盼望，却没能等到阳光下这秋天的景象…</p>
+
+<p>迎来</p>
+
+<p>在2010年的后半年，我收获了一个确定稳定的方向。未来的事不宜打算地太细，那就为这个方向努力吧，希望2011年努力更多一些，效率更高一些，明年写总结的时候有更多的好东西可以写。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/01/%e5%97%92%e5%91%a4%e5%97%92-%e5%97%92%e5%91%a4%e5%97%92-%e5%97%92%e5%91%a4%e5%95%a6%e5%95%a6/">嗒呤嗒-嗒呤嗒-嗒呤啦啦</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-01-23T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Blog很久没有update了，原因还是那个俗得不能再俗的—忙。</p>
+
+<p>计划年底前清空的To-do List，现在看来鸭梨还是很大滴，关键的时候还有人不时地赏个压力测试。</p>
+
+<p>即将到来的春节，是我真正意义上工作后的第一个春节。作为不再需要买火车票回家过年的人，祝愿那些再没有学生票可买的朋友能够顺顺利利买到回家过年的车票，毕竟那不只是张车票。</p>
+
+<p>言归正传，最近正在看<a href="http://jimmyg.org/" target="_blank">James Gardner</a> 的 <a href="http://pylonsbook.com/en/1.1/index.html" target="_blank">PylonsBook</a>，进展到了<a href="http://pylonsbook.com/en/1.1/starting-the-simplesite-tutorial.html" target="_blank">Chapter 8</a>。 由于Pylons 升级到了1.0，还有相关的 Third-Part Components也更新到了新的版本，有些代码就不工作了。花了半天的功夫才弄清楚让代码重新工作起来。本来想在Blog上记录下来，不料<a href="http://sunng.info" target="_blank">Sunng </a>早已贴了出来<a href="http://sunng.info/blog/2010/09/%E8%BF%81%E7%A7%BBpylonsbook-chapter-8%E5%88%B0pylons1-0/" target="_blank">《迁移pylonsbook chapter 8到pylons1.0》</a>。</p>
+
+<p>我想，接下来还是说说感想，而不是重造个轮子，老实说我也造不出来。当然也不是写篇《Sunng 与我— 不得不说的二三事》，毕竟我与他都是取向正常的老男人。</p>
+
+<p>Pylons 和 Django 设计最大的不同是，Django的Components 都是自己定制开发的；而Pylons 是采用一定规范，使用Third-Part Components。所以相比较而言，Pylons就更灵活些，选择余地多些。但是也会产生些副作用，比如<a href="http://pylonsbook.com/en/1.1/starting-the-simplesite-tutorial.html" target="_blank">PylonsBook Chapter 8</a>中所使用的FormBuild 2.x，等到了FormBuild 3.x ，所有API 基本上都不是那么一回事了。不得不花费时间去重新弄明白，或者重新做出选择。不过话说回来，我之所以会花那么多时间，只说明一点，知道的太少。如果只需要看下Changes 就能轻车熟路的话，那就是另外的境界了。</p>
+
+<p>另外感叹下，从学校出来那一年多，我基本上是白瞎了，看看那谁谁们就知道我Out 到哪了。</p>
+
+<p>开始写的时候，给房间制造声音的电视播的是步步高音乐手机的广告，背景音乐“嗒呤嗒-嗒呤嗒-嗒呤啦啦”的很好听，女声很甜美，拿来当个标题。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/12/%e6%88%91%e5%b0%b1%e6%98%af%e9%87%87%e4%b8%aa%e8%98%91%e8%8f%87/">我就是采个蘑菇</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-25T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>惯例，开头汇报下近况。最近对GTK比较感兴趣，花了些时间把PyGTK 2.x  ﻿tutorial 过了一遍。这周早些时候开始了蓄谋已久的饭否、豆瓣客户端的工作。没有什么设计，给自己作东西，够cool就行。目前也不急于把项目摆进社区给大伙看，因为还远没有达到预期。有兴趣的朋友，敬请等候，:-)。</p>
+
+<p>昨晚是平安夜，曲江太平洋影城推出了“平安夜热映电影连连看”活动，四部热映电影，从凌晨开始一直播到第二天。由于小红本过期，于是在价格诱惑面前，没有怎么反抗就从了。至于先前计划的平安夜猛事就是这了，以二十四岁高龄，加了一个礼拜班后去通宵看电影，应该算得上猛事一件吧。</p>
+
+<p><img class="alignnone" title="大唐不夜城" src="http://pic.yupoo.com/convallariaa/AIQZbHIn/medium.jpg" alt="大唐不夜城" width="500" height="377" /></p>
+
+<p>你猜对了，它不是图片，只是个分割线。</p>
+
+<p>昨天下午年终总结，稀里糊涂就获奖了，奖品是个杯具。</p>
+
+<p>至于标题，是用来打酱油的。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/12/%e6%9b%b2%e6%b1%9f%e8%be%b9%e4%b8%8a/">曲江边上</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-13T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>我就不跟大伙说我来支援大西北了，因为就在刚回来那阵，闷热得我以为还在南京。到处是亲水绿地，十里一湖，五里一池，八水绕长安；街边尽是漂亮整洁的现代建筑；马路特别宽，特别干净，路边是参天的法国梧桐，光是走在上面就是一种享受——开个玩笑，要是真的就好了。</p>
+
+<p>其实大环境还真是没得说。在我离开的五年，西安生态环境和城市建设上了一个大台阶，而且丝毫看不出有刹车的迹象，只不过我住的地方比较不伦不类。曲江在隋唐就是著名的皇家园林，现在也是古城群众向往的地方。尴尬的是我就住在曲江边上，类比起来就像08年下半年住过的南京花园路一带。说不出是好是坏，因为正是08年住在花园路的两个月把Python、Pylons入了个门，了解了一堆OpenGIS的工具，哈了一个“World”来告慰那颗学GIS的心灵，顺便把生产实习和毕业设计给了了。这大概也是导致09年上半年比较空虚的原因之一吧。也是在那两个月远离学校的生活让我提前体会了离开学校走向社会的种种情绪，没少跟着<a href="http://sunng.info/blog" target="_blank">Sunng</a>感叹人生啊。这也让我有了提前准备，以致于没有在毕业的时候情绪失控，喝高了拉着女同学的手不放，谈人生谈理想。</p>
+
+<p>被边缘的人在哪都是被边缘着，GAE上架上去没多久的Blog也在上周晚些时候被边缘到墙外面去了，不过都在意料之中。于是花了生平第一笔美元，跨国采购，索性边缘地更远一些。</p>
+
+<p>其实生活还是很不错的，关键是怎么看。年底采购台D3000，等到春暖花开的时候去南湖走走；世园会前去浐灞转转，开幕后就不去凑热闹了。等到手头不那么紧的时候去东边拜访一下<a href="http://sunng.info/blog" target="_blank">Sunng</a>他们。另外身边还有同寝室四年，从05年同一条路走过来的KC同学，有时候交流一下，发现前面还是光明的，只不过道路比较坎坷而已。</p>
+
+<p><a href="http://fanfou.com/zjuntao" target="_blank">饭否</a>的归来，也给这个本来就不太冷的冬天带来了些许春意，难能可贵的是时隔一年多的朋友还能记着。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/11/%e9%95%bf%e5%ae%89%e5%8c%97%e8%b7%af18%e5%8f%b7/">长安北路18号</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-11-28T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>连着加班已经两个礼拜了，两天昼伏夜行，两天昼行夜伏。</p>
+
+<p>高档的服务器比用它的人少，人歇，服务器不歇，往往这种把生物钟倒得一塌糊涂的工作最折腾。到周五晚上症状就来了，头晕，发热。好在有惊无险，下班后赶紧吃药、睡觉，第二天起来就差不多了。按计划，今天应该晚上去办公室，结果办公室空无一人，一问，大伙这两周干得太给力，活完了。那个高兴，就像上学的时候，起了个大早跑到学校，学校没开门，然后忽然想起是礼拜天。</p>
+
+<p>长安北路18号，是省图书馆。早些时候办了省图的读者证，从办公室出来就直接去那了。整个十一月除了感恩节当天<a href="http://fanfou.com/zjuntao">饭否</a>归来，再有值得感恩的就是省图取消了年费。在CPI涨得一塌糊涂的时候，这对我们这些为省五毛钱隔条街去吃面的，实在是值得吃面的时候多加个蛋庆祝的。</p>
+
+<p>省图北面就是朱雀体育场，浐灞的主场。要是赶上主场作战，周末可以在省图待到下午，然后直接去看球。比赛结束后，再到体育场背面小巷子里去吃烤串，挺惬意的一件事情。</p>
+
+<p><img src="http://pic.yupoo.com/convallariaa/AEMdIP7h/medium.jpg" alt="陕西省图书馆" width="500" height="377" /></p>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/11/update-your-console-program-with-qt-ui/">Update Your Console Program With Qt UI</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-11-20T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>正式上班以来，为工作上的事情，没少写程序。</p>
+
+<p>开始的想法是不做UI，通过输入命令行参数与用户交互，毕竟console做得好还是很cool的。可后来同事们纷纷表示不习惯黑漆漆的console。也对，对于习惯用鼠标在SNS上从一个链接点到另一个链接，愣是能点一下午的用户，说console的好处就好比想看韩剧的观众，你愣是给他播新闻联播。后来试着用硬编码的方法解决问题，同事们方便了，可自己的麻烦也多了。于是开始着手做个UI，让大家都能解脱。</p>
+
+<p>考虑到有以前在C++ 环境下Qt 的经验，所以在PyGtk、PyQt 中选择了PyQt。PyQt 说到底毕竟是Qt 的Python 绑定，所以主要的依旧还是C++ 环境下Qt 的几大模块：</p>
+
+<ul>
+  <li>QtCore： 包含核心的非GUI功能，用于时间、文件和目录、各种数据类型、流、网址、MIME类型、线程或进程；</li>
+  <li>QtGui：包含图形组件和相关的类，如按钮、窗体、状态栏、工具栏、滚动条、位图、颜色、字体等；</li>
+  <li>QtNetwork：包含了网络编程相关的类，这些类允许编写TCP/IP 和UDP 的客户端和服务器端程序；</li>
+  <li>QtXml：包含使用XML文件的类，这个模块提供了SAX 和DOM API 的实现；</li>
+  <li>QtSvg：包含了显示SVG文件内容的类；</li>
+  <li>QtOpenGL：包含了使用OpenGL库渲染3D和2D图形的类；</li>
+  <li>QtSql：包含了提供提供数据库操作的类，同时也提供了一个SQLite 的实现。</li>
+</ul>
+
+<p>考虑安全问题，就不用用来工作的程序示例，下面示例一个“Hello World”程序<br />
+<img src="http://pic.yupoo.com/convallariaa/ADxq52Kf/elAxd.png" alt="Calculate" width="280" height="278" /></p>
+
+<pre class="brush:py">import sys
+from math import *
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
+#calculate form widget
+class Form(QDialog):
+    def __init__(self,parent=None):
+        super(Form,self).__init__(parent)
+        self.browser = QTextBrowser()
+        self.lineedite = QLineEdit("Type a expression and press Enter")
+        self.lineedite.selectAll()
+        layout = QVBoxLayout()
+        layout.addWidget(self.browser)
+        layout.addWidget(self.lineedite)
+        self.setLayout(layout)
+        self.lineedite.setFocus()
+        self.connect(self.lineedite,SIGNAL("returnPressed()"),self.updateUI)
+        self.setWindowTitle("Calculate")
+    def updateUI(self):
+        try:
+            text = unicode(self.lineedite.text())
+            self.browser.append("%s = %s" % (text, eval(text)))
+        except:
+            self.browser.append("%s is invalid!" % text)
+</pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page4">&larr; Older</a>
+    
+    <a href="/blog/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page2">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/Optimization0/">Optimization (0)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/%e5%ae%81%e5%a4%8f%e5%b7%9d/">宁夏川</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/i-am-back/">I Am Back</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/08/something-about-learning-javascript/">Something About Learning JavaScript</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/07/setup-python-web/">Setup Python Web</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/zjuntor">@zjuntor</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'zjuntor',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/blog/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/zjuntor?count=3&amp;sort=date&amp;callback=renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/zjuntor">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - zjuntor -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zjuntor';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

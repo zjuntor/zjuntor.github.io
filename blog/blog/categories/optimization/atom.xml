@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Optimization | Life Stream]]></title>
+  <link href="http://zjuntor.info/blog/categories/optimization/atom.xml" rel="self"/>
+  <link href="http://zjuntor.info/"/>
+  <updated>2014-07-22T02:41:33+08:00</updated>
+  <id>http://zjuntor.info/</id>
+  <author>
+    <name><![CDATA[zjuntor]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Optimization (0)]]></title>
+    <link href="http://zjuntor.info/2014/07/Optimization0/"/>
+    <updated>2014-07-17T00:12:24+08:00</updated>
+    <id>http://zjuntor.info/2014/07/optimization-0</id>
+    <content type="html"><![CDATA[<p>最近一段时间学习数据挖掘，机器学习和模式识别相关的东西，频繁地遇到优化的问题，特别是机器学习与模式识别，很多问题最终都归结为一个关于需要学习的参数的目标函数求极值。因此甚至有人认为数据挖掘，机器学习和模式识别在某种程度上就是优化。虽然有些夸张，毕竟数据挖掘，机器学习和模式识别更重要的是解决问题的思路和策略，但是优化作为最终解决问题的工具，重要性也不言而喻。</p>
+
+<p>言归正传，优化问题是指这样一类问题（1）：</p>
+
+<script type="math/tex; mode=display">
+\begin {eqnarray*}
+min\ f(x)
+\newline
+s.t.\ x \in K
+\end {eqnarray*}
+</script>
+
+<p>问题中$f(x)$为目标函数，$x$为向量，$K$为可行域，为约束集合$C$限定的区域，而$C$通常由等式与不等式组成，此时$C=E\cup I$，其中等式约束集合记为$E$，不等式约束集合记为$I$。$C$也可以为空集，此时即无约束优化。为了保证一致性以及表示方便，约定用小写英文字母表示向量，用小写希腊字母表示标量，用$g$表示向量$\nabla f(x)$，$G$表示Hessian矩阵$\nabla ^2 f(x)$.</p>
+
+<p>求解优化问题（1），通常通过给定初始值$x _0$，构造序列 $x _{k+1}=x _k + \alpha _k d _k$使得序列$f(x _k)$收敛来实现($\alpha _k &gt;0$)。其中$x _0$为初始值，$\alpha _k$为步长，$d _k$为下降方向。通常情况下$x _0$的选取具有随意性，于是优化问题就归结为寻找使得$f(x _k)$收敛的序列$\alpha _k$和$d _k$。因此后面几乎所有的内容都是围绕如何求解$\alpha _k$和$d _k$使得算法收敛，算法更稳定，收敛速度更快。</p>
+
+<p>此外，近年来，关于优化问题（1）的求解又发展出了一些数值解法外的智能解法，如粒子群，蚁群，模拟退火以及遗传算法，相较于数值解法，这些智能解法在一定程度上具有天然的并行结构（每一步都可以分解为若干并行的子问题的求解），利于并行算法的设计，缺点是目前尚未有明确的理论证明其收敛性。Optimization（x）系列作为学习数值优化的笔记，智能优化算法就不涉及了。</p>
+
+<p>下面讨论$x^*$为$f(x)$的一个局部极小点所满足的条件（$f(x)$满足必要的连续，可微条件）:</p>
+
+<p><strong>Theorem 1（一阶必要条件）</strong> ： $x ^ *$为$f(x)$的一个局部极小点，则$g(x ^ *)=\nabla f(x ^ *)=0$.</p>
+
+<p><strong>Theorem 2（二阶必要条件）</strong> ： $x ^ *$为$f(x)$的一个局部极小点，则矩阵$G(x ^ *)$半正定，即$G(x ^ *)\geq 0$.</p>
+
+<p><strong>Theorem 3（充分条件）</strong> ： $g(x ^ *)=\nabla f(x ^ *)=0$，矩阵$G(x ^ *)$正定，即$G(x ^ *)&gt; 0$，则$x ^ *$为$f(x)$的一个局部极小点.</p>
+
+<p><strong>Theorem 4（凸函数充要条件）</strong> ： $f(x)$为凸函数，$g(x ^ *)=\nabla f(x ^ *)=0$ $\Leftrightarrow$  $x ^ *$为$f(x)$的一个局部极小点。</p>
+
+<p>此外，再讨论$d _k$为$f(x _ k)$处的下降方向的充要条件（$f(x)$满足必要的连续，可微条件）：</p>
+
+<p><strong>Theorem 5（下降方向充要条件）</strong> ： ${d _ k}^T g(x _ k) = {d _ k}^T \nabla f(x _ k) &lt;0$ $\Leftrightarrow$ ${d _ k}$为$x _ k$处的一个下降方向。</p>
+
+<p>本节主要讨论了一些优化问题所需的基础知识，所列出的5个定理证明起来并不复杂，多元函数泰勒展开，取前面必要的几阶，再带入条件一路就下来了。下节开始，从无约束优化开始，开始讨论具体的优化方法。</p>
+
+]]></content>
+  </entry>
+  
+</feed>
