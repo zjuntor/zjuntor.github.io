@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Linux | Life Stream]]></title>
   <link href="http://zjuntor.info/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://zjuntor.info/"/>
-  <updated>2014-09-24T17:08:58+08:00</updated>
+  <updated>2014-09-24T17:10:34+08:00</updated>
   <id>http://zjuntor.info/</id>
   <author>
     <name><![CDATA[zjuntor]]></name>
@@ -29,14 +29,7 @@
 
 <h3 id="checking-driver-mod-name-on-your-platform">Checking driver mod name on your platform</h3>
 <blockquote>
-  <table>
-    <tbody>
-      <tr>
-        <td>lsmod</td>
-        <td>grep 8192ee</td>
-      </tr>
-    </tbody>
-  </table>
+  <p>lsmod | grep 8192ee</p>
 </blockquote>
 
 <p>mod name(r8192ee) of mine is different from rtlwifi_new(rtl8192ee), so I need to remove and blacklist the old one.</p>
@@ -50,14 +43,7 @@
 
 <h3 id="blacklisting-the-old-driver-modoptional">blacklisting the old driver mod(optional)</h3>
 <blockquote>
-  <table>
-    <tbody>
-      <tr>
-        <td>echo “blacklist r8192ee”</td>
-        <td>sudo tee -a /etc/modprobe.d/blacklist.conf</td>
-      </tr>
-    </tbody>
-  </table>
+  <p>echo “blacklist r8192ee” | sudo tee -a /etc/modprobe.d/blacklist.conf</p>
 </blockquote>
 
 <h3 id="install-rtlwifinew">install rtlwifi_new</h3>
