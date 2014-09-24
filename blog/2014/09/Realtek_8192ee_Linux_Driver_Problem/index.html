@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>嗒呤嗒-嗒呤嗒-嗒呤啦啦 - Life Stream</title>
+  <title>Realtek 8192ee Linux Driver Problem - Life Stream</title>
   <meta name="author" content="zjuntor">
 
   
-  <meta name="description" content="Blog很久没有update了，原因还是那个俗得不能再俗的—忙。 计划年底前清空的To-do List，现在看来鸭梨还是很大滴，关键的时候还有人不时地赏个压力测试。 即将到来的春节，是我真正意义上工作后的第一个春节。作为不再需要买火车票回家过年的人， &hellip;">
+  <meta name="description" content="In May, I got this Lenovo Thinkpad L440 laptop, but it’s PCI wireless adaptor (Realtek 8192ee) could not work on Fedora 20. By checking this Realtek &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://zjuntor.info/2011/01/%e5%97%92%e5%91%a4%e5%97%92-%e5%97%92%e5%91%a4%e5%97%92-%e5%97%92%e5%91%a4%e5%95%a6%e5%95%a6">
+  <link rel="canonical" href="http://zjuntor.info/2014/09/Realtek_8192ee_Linux_Driver_Problem">
   <link href="/blog/favicon.png" rel="icon">
   <link href="/blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/blog/atom.xml" rel="alternate" title="Life Stream" type="application/atom+xml">
@@ -85,7 +85,7 @@ MathJax.Hub.Config({
   
   <header>
     
-      <h1 class="entry-title">嗒呤嗒-嗒呤嗒-嗒呤啦啦</h1>
+      <h1 class="entry-title">Realtek 8192ee Linux Driver Problem</h1>
     
     
       <p class="meta">
@@ -101,28 +101,51 @@ MathJax.Hub.Config({
   
 
 
-<time datetime="2011-01-23T00:00:00+08:00" pubdate data-updated="true"></time>
+<time datetime="2014-09-24T16:12:40+08:00" pubdate data-updated="true">Sep 24<sup>th</sup>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Blog很久没有update了，原因还是那个俗得不能再俗的—忙。</p>
+<div class="entry-content"><p>In May, I got this Lenovo Thinkpad L440 laptop, but it’s PCI wireless adaptor (Realtek 8192ee) could not work on Fedora 20. By checking this <a href="http://wireless.kernel.org/en/users/Drivers/rtl819x" target="_blank">Realtek 802.11n drivers</a>, I got that it’s driver would be shipped on kernel 3.16, So I buy a usb wireless adaptor(NETGEAR WNA1100 AR9271) for temporary use.</p>
 
-<p>计划年底前清空的To-do List，现在看来鸭梨还是很大滴，关键的时候还有人不时地赏个压力测试。</p>
+<p>Recently, by updating my laptop to kernel 3.16, the PCI wireless adaptor works, but does not work well. The wifi connection is very slow and unstable with large packages loss(by checking ping). So I searched for a resolution, and finally I got it by using <a href="https://github.com/lwfinger/rtlwifi_new/" target="_blank">rtlwifi_new</a>. </p>
 
-<p>即将到来的春节，是我真正意义上工作后的第一个春节。作为不再需要买火车票回家过年的人，祝愿那些再没有学生票可买的朋友能够顺顺利利买到回家过年的车票，毕竟那不只是张车票。</p>
+<p>Detail :
+#Downloading rtlwifi_new(mod name rtl8192ee)
+&gt;git clone http://github.com/lwfinger/rtlwifi_new.git</p>
 
-<p>言归正传，最近正在看<a href="http://jimmyg.org/" target="_blank">James Gardner</a> 的 <a href="http://pylonsbook.com/en/1.1/index.html" target="_blank">PylonsBook</a>，进展到了<a href="http://pylonsbook.com/en/1.1/starting-the-simplesite-tutorial.html" target="_blank">Chapter 8</a>。 由于Pylons 升级到了1.0，还有相关的 Third-Part Components也更新到了新的版本，有些代码就不工作了。花了半天的功夫才弄清楚让代码重新工作起来。本来想在Blog上记录下来，不料<a href="http://sunng.info" target="_blank">Sunng </a>早已贴了出来<a href="http://sunng.info/blog/2010/09/%E8%BF%81%E7%A7%BBpylonsbook-chapter-8%E5%88%B0pylons1-0/" target="_blank">《迁移pylonsbook chapter 8到pylons1.0》</a>。</p>
+<h1 id="checking-driver-mod-name-on-your-platform">Checking driver mod name on your platform</h1>
+<blockquote>
+  <p>lsmod | grep 8192ee
+mod name(r8192ee) of mine is different from rtlwifi_new(rtl8192ee), so I need to remove and blacklist the old one.</p>
+</blockquote>
 
-<p>我想，接下来还是说说感想，而不是重造个轮子，老实说我也造不出来。当然也不是写篇《Sunng 与我— 不得不说的二三事》，毕竟我与他都是取向正常的老男人。</p>
+<h1 id="remove-the-old-driver-modoptional">remove the old driver mod(optional)</h1>
+<blockquote>
+  <p>sudo rmmod r8192ee
+For a mod removed by ‘rmmod’ will be loaded by reboot, I need to blacklist r8192ee</p>
+</blockquote>
 
-<p>Pylons 和 Django 设计最大的不同是，Django的Components 都是自己定制开发的；而Pylons 是采用一定规范，使用Third-Part Components。所以相比较而言，Pylons就更灵活些，选择余地多些。但是也会产生些副作用，比如<a href="http://pylonsbook.com/en/1.1/starting-the-simplesite-tutorial.html" target="_blank">PylonsBook Chapter 8</a>中所使用的FormBuild 2.x，等到了FormBuild 3.x ，所有API 基本上都不是那么一回事了。不得不花费时间去重新弄明白，或者重新做出选择。不过话说回来，我之所以会花那么多时间，只说明一点，知道的太少。如果只需要看下Changes 就能轻车熟路的话，那就是另外的境界了。</p>
+<h1 id="blacklisting-the-old-driver-modoptional">blacklisting the old driver mod(optional)</h1>
+<blockquote>
+  <p>echo “blacklist r8192ee” | sudo tee -a /etc/modprobe.d/blacklist.conf
+then</p>
+</blockquote>
 
-<p>另外感叹下，从学校出来那一年多，我基本上是白瞎了，看看那谁谁们就知道我Out 到哪了。</p>
+<h1 id="install-rtlwifinew">install rtlwifi_new</h1>
+<blockquote>
+  <p>cd rtlwifi_new
+make
+sudo modprobe -rv rtl8192ee
+sudo make install
+sudo modprobe -v rtl8192ee</p>
+</blockquote>
 
-<p>开始写的时候，给房间制造声音的电视播的是步步高音乐手机的广告，背景音乐“嗒呤嗒-嗒呤嗒-嗒呤啦啦”的很好听，女声很甜美，拿来当个标题。</p>
+<p>Job is done.</p>
+
+<p>ref :  <a href="http://stackoverflow.com/questions/25396012/fedora-20-realtek-wifi-driver-slow-errors-drops-connection" target="_blank">stackoverflow</a></p>
 </div>
 
 
@@ -131,7 +154,7 @@ MathJax.Hub.Config({
       
   
 
-<span class="byline author vcard">Posted by <span class="fn">torrge</span></span>
+<span class="byline author vcard">Posted by <span class="fn">zjuntor</span></span>
 
       
 
@@ -145,12 +168,12 @@ MathJax.Hub.Config({
   
 
 
-<time datetime="2011-01-23T00:00:00+08:00" pubdate data-updated="true"></time>
+<time datetime="2014-09-24T16:12:40+08:00" pubdate data-updated="true">Sep 24<sup>th</sup>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/blog/categories/daily-life/'>daily life</a>, <a class='category' href='/blog/blog/categories/photography/'>photography</a>
+    <a class='category' href='/blog/blog/categories/linux/'>linux</a>
   
 </span>
 
@@ -166,10 +189,8 @@ MathJax.Hub.Config({
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2010/12/%e6%88%91%e5%b0%b1%e6%98%af%e9%87%87%e4%b8%aa%e8%98%91%e8%8f%87/" title="Previous Post: 我就是采个蘑菇">&laquo; 我就是采个蘑菇</a>
+        <a class="basic-alignment left" href="/blog/2014/07/Optimization0/" title="Previous Post: Optimization (0)">&laquo; Optimization (0)</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2011/02/%e8%bf%8e%e6%9d%a5%ef%bc%8c%e9%80%81%e5%be%80/" title="Next Post: 迎来，送往">迎来，送往 &raquo;</a>
       
     </p>
   </footer>
@@ -271,8 +292,8 @@ MathJax.Hub.Config({
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://zjuntor.info/2011/01/%e5%97%92%e5%91%a4%e5%97%92-%e5%97%92%e5%91%a4%e5%97%92-%e5%97%92%e5%91%a4%e5%95%a6%e5%95%a6/';
-        var disqus_url = 'http://zjuntor.info/2011/01/%e5%97%92%e5%91%a4%e5%97%92-%e5%97%92%e5%91%a4%e5%97%92-%e5%97%92%e5%91%a4%e5%95%a6%e5%95%a6/';
+        var disqus_identifier = 'http://zjuntor.info/2014/09/Realtek_8192ee_Linux_Driver_Problem/';
+        var disqus_url = 'http://zjuntor.info/2014/09/Realtek_8192ee_Linux_Driver_Problem/';
         var disqus_script = 'embed.js';
       
     (function () {

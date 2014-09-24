@@ -4,7 +4,7 @@
   <title><![CDATA[Life Stream]]></title>
   <link href="http://zjuntor.info/atom.xml" rel="self"/>
   <link href="http://zjuntor.info/"/>
-  <updated>2014-07-22T05:24:23+08:00</updated>
+  <updated>2014-09-24T16:57:41+08:00</updated>
   <id>http://zjuntor.info/</id>
   <author>
     <name><![CDATA[zjuntor]]></name>
@@ -12,6 +12,52 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Realtek 8192ee Linux Driver Problem]]></title>
+    <link href="http://zjuntor.info/2014/09/Realtek_8192ee_Linux_Driver_Problem/"/>
+    <updated>2014-09-24T16:12:40+08:00</updated>
+    <id>http://zjuntor.info/2014/09/realtek-8192ee-linux-driver-problem</id>
+    <content type="html"><![CDATA[<p>In May, I got this Lenovo Thinkpad L440 laptop, but it’s PCI wireless adaptor (Realtek 8192ee) could not work on Fedora 20. By checking this <a href="http://wireless.kernel.org/en/users/Drivers/rtl819x" target="_blank">Realtek 802.11n drivers</a>, I got that it’s driver would be shipped on kernel 3.16, So I buy a usb wireless adaptor(NETGEAR WNA1100 AR9271) for temporary use.</p>
+
+<p>Recently, by updating my laptop to kernel 3.16, the PCI wireless adaptor works, but does not work well. The wifi connection is very slow and unstable with large packages loss(by checking ping). So I searched for a resolution, and finally I got it by using <a href="https://github.com/lwfinger/rtlwifi_new/" target="_blank">rtlwifi_new</a>. </p>
+
+<p>Detail :
+#Downloading rtlwifi_new(mod name rtl8192ee)
+&gt;git clone http://github.com/lwfinger/rtlwifi_new.git</p>
+
+<h1 id="checking-driver-mod-name-on-your-platform">Checking driver mod name on your platform</h1>
+<blockquote>
+  <p>lsmod | grep 8192ee
+mod name(r8192ee) of mine is different from rtlwifi_new(rtl8192ee), so I need to remove and blacklist the old one.</p>
+</blockquote>
+
+<h1 id="remove-the-old-driver-modoptional">remove the old driver mod(optional)</h1>
+<blockquote>
+  <p>sudo rmmod r8192ee
+For a mod removed by ‘rmmod’ will be loaded by reboot, I need to blacklist r8192ee</p>
+</blockquote>
+
+<h1 id="blacklisting-the-old-driver-modoptional">blacklisting the old driver mod(optional)</h1>
+<blockquote>
+  <p>echo “blacklist r8192ee” | sudo tee -a /etc/modprobe.d/blacklist.conf
+then</p>
+</blockquote>
+
+<h1 id="install-rtlwifinew">install rtlwifi_new</h1>
+<blockquote>
+  <p>cd rtlwifi_new
+make
+sudo modprobe -rv rtl8192ee
+sudo make install
+sudo modprobe -v rtl8192ee</p>
+</blockquote>
+
+<p>Job is done.</p>
+
+<p>ref :  <a href="http://stackoverflow.com/questions/25396012/fedora-20-realtek-wifi-driver-slow-errors-drops-connection" target="_blank">stackoverflow</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Optimization (0)]]></title>
@@ -606,27 +652,6 @@ methodName = decorator(version='x.x.x',author='whatever')(arg)</pre>
 <p>当然，能接受黑白效果和刷新速度，用来上网也算一个功能</p>
 
 <p><img class="alignnone" title="Web Browser of Kindle 3" src="http://pic.yupoo.com/convallariaa/AXX4y6vq/medium.jpg" alt="" width="500" height="333" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[希望希望不再只是希望]]></title>
-    <link href="http://zjuntor.info/2011/04/%e5%b8%8c%e6%9c%9b%e5%b8%8c%e6%9c%9b%e4%b8%8d%e5%86%8d%e5%8f%aa%e6%98%af%e5%b8%8c%e6%9c%9b/"/>
-    <updated>2011-04-03T00:00:00+08:00</updated>
-    <id>http://zjuntor.info/2011/04/%e5%b8%8c%e6%9c%9b%e5%b8%8c%e6%9c%9b%e4%b8%8d%e5%86%8d%e5%8f%aa%e6%98%af%e5%b8%8c%e6%9c%9b</id>
-    <content type="html"><![CDATA[<p>汇报下近况</p>
-
-<p>下午，新赛季浐灞的第一个主场。上午出门，带着Kindle 在省图，一直到后来去省体育场跟五万球迷欢呼胜利。有这么一个好的开头，我想这个赛季我的出勤率会高些（废话，上个赛季就没有出勤率）。</p>
-
-<p>昨天晚上，去听了“民谣在路上-老狼和他的朋友们”，在西安音乐厅，榕树下主办。整个演唱会，来了不少歌手，我只认识万晓利，老狼。正如早些时候估计的那样，现在能唱民谣，摇滚民谣，能唱出味道，就要再往西北看去。后来的马条，就是来自西北好地方新疆。</p>
-
-<p>万晓利开场是一首<女儿情>，就是女儿国国王勾引唐僧那段，万总的表演很到位，唱就不用说了，毕竟那是主业。万总口琴声一响起，那感觉好极了。后来回忆一下，大学刚入学的时候，KC同学就在宿舍给吹过口琴给我们听。吉他、口琴、女生楼下的草地，那就是校园民谣了，可惜我们没有赶上好时候，KC同学也就在宿舍吹吹，女生楼下的草地也黑灯瞎火的，想想也不对味。</女儿情></p>
-
-<p>老狼开场没有唱那几首大伙都懂的歌，想想也对，唱得早了，大伙都眼泪哗啦啦地，后面还咋唱呢。万晓利开唱的时候，陆陆续续就有人站了起来，到老狼这会，就都站起来了。听演唱会的人从70后到90后，偶尔参杂着60后。70后进去的时候，都是一幅严肃表情，这会就不是这么一回事了，那表情留给朋友去想象吧，反正有不少70后往互动大屏幕上发这样的消息：当年就是唱着这首歌把她骗到手的，今天我们一家三口坐在一起。现场的80后，我就是，就是有点那啥的表情，也看不到。</p>
-
-<p>满园春色惹人醉，悄悄问圣僧，女儿美不美，美不美</p>
-
-<p><img class="alignnone wp-image-259" title="吹口琴的万晓利" src="http://pic.yupoo.com/convallariaa/AXXYE7KS/medium.jpg" alt="" width="500" height="333" /></p>
 ]]></content>
   </entry>
   

@@ -88,6 +88,79 @@ MathJax.Hub.Config({
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2014/09/Realtek_8192ee_Linux_Driver_Problem/">Realtek 8192ee Linux Driver Problem</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-24T16:12:40+08:00" pubdate data-updated="true">Sep 24<sup>th</sup>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In May, I got this Lenovo Thinkpad L440 laptop, but it’s PCI wireless adaptor (Realtek 8192ee) could not work on Fedora 20. By checking this <a href="http://wireless.kernel.org/en/users/Drivers/rtl819x" target="_blank">Realtek 802.11n drivers</a>, I got that it’s driver would be shipped on kernel 3.16, So I buy a usb wireless adaptor(NETGEAR WNA1100 AR9271) for temporary use.</p>
+
+<p>Recently, by updating my laptop to kernel 3.16, the PCI wireless adaptor works, but does not work well. The wifi connection is very slow and unstable with large packages loss(by checking ping). So I searched for a resolution, and finally I got it by using <a href="https://github.com/lwfinger/rtlwifi_new/" target="_blank">rtlwifi_new</a>. </p>
+
+<p>Detail :
+#Downloading rtlwifi_new(mod name rtl8192ee)
+&gt;git clone http://github.com/lwfinger/rtlwifi_new.git</p>
+
+<h1 id="checking-driver-mod-name-on-your-platform">Checking driver mod name on your platform</h1>
+<blockquote>
+  <p>lsmod | grep 8192ee
+mod name(r8192ee) of mine is different from rtlwifi_new(rtl8192ee), so I need to remove and blacklist the old one.</p>
+</blockquote>
+
+<h1 id="remove-the-old-driver-modoptional">remove the old driver mod(optional)</h1>
+<blockquote>
+  <p>sudo rmmod r8192ee
+For a mod removed by ‘rmmod’ will be loaded by reboot, I need to blacklist r8192ee</p>
+</blockquote>
+
+<h1 id="blacklisting-the-old-driver-modoptional">blacklisting the old driver mod(optional)</h1>
+<blockquote>
+  <p>echo “blacklist r8192ee” | sudo tee -a /etc/modprobe.d/blacklist.conf
+then</p>
+</blockquote>
+
+<h1 id="install-rtlwifinew">install rtlwifi_new</h1>
+<blockquote>
+  <p>cd rtlwifi_new
+make
+sudo modprobe -rv rtl8192ee
+sudo make install
+sudo modprobe -v rtl8192ee</p>
+</blockquote>
+
+<p>Job is done.</p>
+
+<p>ref :  <a href="http://stackoverflow.com/questions/25396012/fedora-20-realtek-wifi-driver-slow-errors-drops-connection" target="_blank">stackoverflow</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2014/07/Optimization0/">Optimization (0)</a></h1>
     
     
@@ -711,48 +784,6 @@ methodName = decorator(version='x.x.x',author='whatever')(arg)</pre>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/10/adjust-and-then-go-ahead/">Adjust and Then Go Ahead</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-10-29T00:00:00+08:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>从上周末开始开始看<a href="http://book.douban.com/subject/1787434/" target="_blank">&lt;Pro JSP 2&gt; </a>这本书。在学校的时候为了完成课程作业，曾功利地看过那本红皮的JSP 的书，不过说来惭愧，现在脑子里就剩下那几个名词了，写个Hello world 还得靠IDE。</p>
-
-<p>本来打算看完这本书然后一路下去，详细了解一下整个JavaEE 技术栈。无奈基础实在是太差，光是要想把JSP 和 servlet 相关的大大小小的细节理顺了就需要同时看一堆东西，就拿XML 来说，光知道XML 结构是远不够的。然而我的现状是，同时最多展开两个主题就已经不错了，所以琢磨了一下，这本书看完了后，暂时停下来，在未来相当长的一段时间里，把一些Java 的基础的知识仔细琢磨一下，当然重要的是实践，争取闲暇的时候能写点有意思的东西，娱乐一下。</p>
-
-<p>另外，感慨一下，以前用IDE 不觉得，这次用VIM 写Servlet，JSP 页面和相关配置xml，没少遇坎坷，当然IDE 固然好，但是有些事一开始就交给IDE 了，那永远就没有了解它的机会了。</p>
-
-<p>原来拟了一个长的有些二逼的标题，琢磨了一下，我从来没有嫌过代码太短，也不曾写过什么能叫人会心一笑的缩进，总结一下，我就是个普通青年，那么长的标题不合适。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page2">&larr; Older</a>
@@ -768,6 +799,10 @@ methodName = decorator(version='x.x.x',author='whatever')(arg)</pre>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/09/Realtek_8192ee_Linux_Driver_Problem/">Realtek 8192ee Linux Driver Problem</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/07/Optimization0/">Optimization (0)</a>
       </li>
     
@@ -781,10 +816,6 @@ methodName = decorator(version='x.x.x',author='whatever')(arg)</pre>
     
       <li class="post">
         <a href="/blog/2012/08/something-about-learning-javascript/">Something About Learning JavaScript</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/07/setup-python-web/">Setup Python Web</a>
       </li>
     
   </ul>
