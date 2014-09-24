@@ -46,6 +46,7 @@ GEM
       sass (~> 3.2)
     jekyll-sitemap (0.4.1)
       jekyll (~> 2.0)
+    json (1.8.1)
     kramdown (1.4.0)
     liquid (2.5.5)
     listen (2.7.9)
@@ -95,6 +96,7 @@ DEPENDENCIES
   jekyll-date-format (~> 1.0)
   jekyll-page-hooks (~> 1.2)
   jekyll-sitemap
+  json
   rake (~> 10.0)
   rb-fsevent (~> 0.9)
   rdiscount (~> 2.0)
