@@ -10,7 +10,7 @@ footer: true
 
 #Juntao ZH
 
-> ####Amateur Programmer using Python/C/Java
+> ####Programmer using Python/C/Java
 >
 > ####Data Mining & Machine Leaning Enthusiast
 >
