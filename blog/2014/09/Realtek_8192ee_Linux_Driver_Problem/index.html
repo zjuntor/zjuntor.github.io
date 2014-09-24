@@ -113,27 +113,41 @@ MathJax.Hub.Config({
 <p>Recently, by updating my laptop to kernel 3.16, the PCI wireless adaptor works, but does not work well. The wifi connection is very slow and unstable with large packages loss(by checking ping). So I searched for a resolution, and finally I got it by using <a href="https://github.com/lwfinger/rtlwifi_new/" target="_blank">rtlwifi_new</a>. </p>
 
 <h3 id="downloading-rtlwifinewmod-name-rtl8192ee">Downloading rtlwifi_new(mod name rtl8192ee)</h3>
-
 <blockquote>
   <p>git clone http://github.com/lwfinger/rtlwifi_new.git</p>
 </blockquote>
 
 <h3 id="checking-driver-mod-name-on-your-platform">Checking driver mod name on your platform</h3>
 <blockquote>
-  <p>lsmod | grep 8192ee
-mod name(r8192ee) of mine is different from rtlwifi_new(rtl8192ee), so I need to remove and blacklist the old one.</p>
+  <table>
+    <tbody>
+      <tr>
+        <td>lsmod</td>
+        <td>grep 8192ee</td>
+      </tr>
+    </tbody>
+  </table>
 </blockquote>
+
+<p>mod name(r8192ee) of mine is different from rtlwifi_new(rtl8192ee), so I need to remove and blacklist the old one.</p>
 
 <h3 id="remove-the-old-driver-modoptional">remove the old driver mod(optional)</h3>
 <blockquote>
-  <p>sudo rmmod r8192ee
-For a mod removed by ‘rmmod’ will be loaded by reboot, I need to blacklist r8192ee</p>
+  <p>sudo rmmod r8192ee</p>
 </blockquote>
+
+<p>For a mod removed by ‘rmmod’ will be loaded by reboot, I need to blacklist r8192ee</p>
 
 <h3 id="blacklisting-the-old-driver-modoptional">blacklisting the old driver mod(optional)</h3>
 <blockquote>
-  <p>echo “blacklist r8192ee” | sudo tee -a /etc/modprobe.d/blacklist.conf
-then</p>
+  <table>
+    <tbody>
+      <tr>
+        <td>echo “blacklist r8192ee”</td>
+        <td>sudo tee -a /etc/modprobe.d/blacklist.conf</td>
+      </tr>
+    </tbody>
+  </table>
 </blockquote>
 
 <h3 id="install-rtlwifinew">install rtlwifi_new</h3>
