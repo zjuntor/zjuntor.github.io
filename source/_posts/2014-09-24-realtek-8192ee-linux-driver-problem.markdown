@@ -14,28 +14,42 @@ In May, I got this Lenovo Thinkpad L440 laptop, but its PCI wireless adaptor (Re
 Recently, by updating my laptop to kernel 3.16, the PCI wireless adaptor works, but does not work well. The wifi connection is very slow and unstable with large packages loss(by checking ping). So I searched for a resolution, and finally I got it by using <a href="https://github.com/lwfinger/rtlwifi_new/" target="_blank">rtlwifi_new</a>. 
 
 ###Downloading rtlwifi_new(mod name rtl8192ee)
->git clone http://github.com/lwfinger/rtlwifi_new.git
+
+<pre class="brush:sh">
+git clone http://github.com/lwfinger/rtlwifi_new.git
+</pre>
 
 ###Checking driver mod name on your platform
-> lsmod \| grep 8192ee
+
+<pre class="brush:sh">
+ lsmod | grep 8192ee
+</pre>
 
 mod name(r8192ee) of mine is different from rtlwifi_new(rtl8192ee), so I need to remove and blacklist the old one.
 
 ###remove the old driver mod(optional)
->sudo rmmod r8192ee
+
+<pre class="brush:sh">
+sudo rmmod r8192ee
+</pre>
 
 For a mod removed by 'rmmod' will be loaded by reboot, I need to blacklist r8192ee
 
 ###blacklisting the old driver mod(optional)
->echo "blacklist r8192ee" \| sudo tee -a /etc/modprobe.d/blacklist.conf
 
+<pre class="brush:sh">
+echo "blacklist r8192ee" | sudo tee -a /etc/modprobe.d/blacklist.conf
+</pre>
 
 ###install rtlwifi_new
->cd rtlwifi_new<br />
->make<br />
->sudo modprobe -rv rtl8192ee<br />
->sudo make install<br />
->sudo modprobe -v rtl8192ee<br />
+
+<pre class="brush:sh">
+cd rtlwifi_new
+make
+sudo modprobe -rv rtl8192ee
+sudo make install
+sudo modprobe -v rtl8192ee
+</pre>
 
 Job is done.
 
