@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Linux | Life Stream]]></title>
   <link href="http://zjuntor.info/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://zjuntor.info/"/>
-  <updated>2014-09-25T10:18:11+08:00</updated>
+  <updated>2014-09-25T10:19:31+08:00</updated>
   <id>http://zjuntor.info/</id>
   <author>
     <name><![CDATA[zjuntor]]></name>
@@ -18,7 +18,7 @@
     <link href="http://zjuntor.info/2014/09/Realtek_8192ee_Linux_Driver_Problem/"/>
     <updated>2014-09-24T16:12:40+08:00</updated>
     <id>http://zjuntor.info/2014/09/realtek-8192ee-linux-driver-problem</id>
-    <content type="html"><![CDATA[<p>In May, I got this Lenovo Thinkpad L440 laptop, but it’s PCI wireless adaptor (Realtek 8192ee) could not work on Fedora 20. By checking this <a href="http://wireless.kernel.org/en/users/Drivers/rtl819x" target="_blank">Realtek 802.11n drivers</a>, I got that it’s driver would be shipped on kernel 3.16, So I buy a usb wireless adaptor(NETGEAR WNA1100 AR9271) for temporary use.</p>
+    <content type="html"><![CDATA[<p>In May, I got this Lenovo Thinkpad L440 laptop, but its PCI wireless adaptor (Realtek 8192ee) could not work on Fedora 20. By checking this <a href="http://wireless.kernel.org/en/users/Drivers/rtl819x" target="_blank">Realtek 802.11n drivers</a>, I got that its driver would be shipped on kernel 3.16, So I buy a usb wireless adaptor(NETGEAR WNA1100 AR9271) for temporary use.</p>
 
 <p>Recently, by updating my laptop to kernel 3.16, the PCI wireless adaptor works, but does not work well. The wifi connection is very slow and unstable with large packages loss(by checking ping). So I searched for a resolution, and finally I got it by using <a href="https://github.com/lwfinger/rtlwifi_new/" target="_blank">rtlwifi_new</a>. </p>
 
