@@ -9,7 +9,7 @@ categories:
   - Linux
 ---
 
-In May, I got this Lenovo Thinkpad L440 laptop, but it's PCI wireless adaptor (Realtek 8192ee) could not work on Fedora 20. By checking this <a href="http://wireless.kernel.org/en/users/Drivers/rtl819x" target="_blank">Realtek 802.11n drivers</a>, I got that it's driver would be shipped on kernel 3.16, So I buy a usb wireless adaptor(NETGEAR WNA1100 AR9271) for temporary use.
+In May, I got this Lenovo Thinkpad L440 laptop, but its PCI wireless adaptor (Realtek 8192ee) could not work on Fedora 20. By checking this <a href="http://wireless.kernel.org/en/users/Drivers/rtl819x" target="_blank">Realtek 802.11n drivers</a>, I got that its driver would be shipped on kernel 3.16, So I buy a usb wireless adaptor(NETGEAR WNA1100 AR9271) for temporary use.
 
 Recently, by updating my laptop to kernel 3.16, the PCI wireless adaptor works, but does not work well. The wifi connection is very slow and unstable with large packages loss(by checking ping). So I searched for a resolution, and finally I got it by using <a href="https://github.com/lwfinger/rtlwifi_new/" target="_blank">rtlwifi_new</a>. 
 
@@ -31,11 +31,11 @@ For a mod removed by 'rmmod' will be loaded by reboot, I need to blacklist r8192
 
 
 ###install rtlwifi_new
->cd rtlwifi_new
->make
->sudo modprobe -rv rtl8192ee
->sudo make install
->sudo modprobe -v rtl8192ee
+>cd rtlwifi_new<br />
+>make<br />
+>sudo modprobe -rv rtl8192ee<br />
+>sudo make install<br />
+>sudo modprobe -v rtl8192ee<br />
 
 Job is done.
 
