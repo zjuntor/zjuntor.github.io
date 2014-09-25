@@ -4,7 +4,7 @@
   <title><![CDATA[Life Stream]]></title>
   <link href="http://zjuntor.info/atom.xml" rel="self"/>
   <link href="http://zjuntor.info/"/>
-  <updated>2014-09-24T17:25:27+08:00</updated>
+  <updated>2014-09-25T10:18:11+08:00</updated>
   <id>http://zjuntor.info/</id>
   <author>
     <name><![CDATA[zjuntor]]></name>
@@ -48,11 +48,11 @@
 
 <h3 id="install-rtlwifinew">install rtlwifi_new</h3>
 <blockquote>
-  <p>cd rtlwifi_new
-make
-sudo modprobe -rv rtl8192ee
-sudo make install
-sudo modprobe -v rtl8192ee</p>
+  <p>cd rtlwifi_new<br />
+make<br />
+sudo modprobe -rv rtl8192ee<br />
+sudo make install<br />
+sudo modprobe -v rtl8192ee<br /></p>
 </blockquote>
 
 <p>Job is done.</p>
