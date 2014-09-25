@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Linux | Life Stream]]></title>
   <link href="http://zjuntor.info/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://zjuntor.info/"/>
-  <updated>2014-09-25T10:29:20+08:00</updated>
+  <updated>2014-09-25T10:30:44+08:00</updated>
   <id>http://zjuntor.info/</id>
   <author>
     <name><![CDATA[zjuntor]]></name>
@@ -24,33 +24,33 @@
 
 <h3 id="downloading-rtlwifinewmod-name-rtl8192ee">Downloading rtlwifi_new(mod name rtl8192ee)</h3>
 <pre class="brush:sh">
-&gt;git clone http://github.com/lwfinger/rtlwifi_new.git
+git clone http://github.com/lwfinger/rtlwifi_new.git
 <pre>
 ###Checking driver mod name on your platform
 <pre class="brush:sh">
-&gt; lsmod | grep 8192ee
+ lsmod | grep 8192ee
 </pre>
 mod name(r8192ee) of mine is different from rtlwifi_new(rtl8192ee), so I need to remove and blacklist the old one.
 
 ###remove the old driver mod(optional)
 <pre class="brush:sh">
-&gt;sudo rmmod r8192ee
+sudo rmmod r8192ee
 </pre>
 
 For a mod removed by 'rmmod' will be loaded by reboot, I need to blacklist r8192ee
 
 ###blacklisting the old driver mod(optional)
 <pre class="brush:sh">
-&gt;echo "blacklist r8192ee" | sudo tee -a /etc/modprobe.d/blacklist.conf
+echo "blacklist r8192ee" | sudo tee -a /etc/modprobe.d/blacklist.conf
 </pre>
 
 ###install rtlwifi_new
 <pre class="brush:sh">
-&gt;cd rtlwifi_new
-&gt;make
-&gt;sudo modprobe -rv rtl8192ee
-&gt;sudo make install
-&gt;sudo modprobe -v rtl8192ee
+cd rtlwifi_new
+make
+sudo modprobe -rv rtl8192ee
+sudo make install
+sudo modprobe -v rtl8192ee
 </pre>
 Job is done.
 
